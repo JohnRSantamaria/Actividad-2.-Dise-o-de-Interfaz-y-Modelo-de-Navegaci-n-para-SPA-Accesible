@@ -1,0 +1,85 @@
+@startuml
+title Frontend - Sistema de Cuenta de Ventas (Accesible WCAG 2.2 AA)
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+actor "Usuario\n(Vendedor/Supervisor)" as user
+actor "Teclado" as keyboard
+actor "Lector de Pantalla" as screenreader
+
+rectangle "Frontend Web App" {
+
+  [App Shell\n(Layout + Router)] as Shell
+
+  package "Vistas Principales" {
+    [Dashboard Ventas] as Dashboard
+    [Leads / Clientes] as Leads
+    [Oportunidades\nPipeline] as Pipeline
+    [Cotizaciones] as Quotes
+    [Perfil Usuario] as Profile
+  }
+
+  package "Sistema UI" {
+    [Design System\n(colores accesibles,\ntipografía >=16px,\nespaciado 8px)] as DS
+    [Component Library\n(botones, tablas,\ninputs, modales, cards)] as Components
+  }
+
+  package "Accesibilidad" {
+    [Gestor de Focus] as Focus
+    [ARIA & Landmarks] as ARIA
+    [Skip Links\n(Saltar contenido)] as Skip
+    [Navegación por teclado] as KeyboardNav
+  }
+
+  package "Lógica Front" {
+    [State Manager\n(auth, sesión,\npreferencias)] as State
+    [Form Engine\n(validaciones,\nmensajes de error)] as Forms
+    [API Client\n(fetch/axios)] as API
+    [Performance\n(lazy load,\ncache UI)] as Perf
+  }
+
+}
+
+' actores
+user --> Shell
+keyboard --> KeyboardNav
+screenreader --> ARIA
+
+' navegación
+Shell --> Dashboard
+Shell --> Leads
+Shell --> Pipeline
+Shell --> Quotes
+Shell --> Profile
+
+' dependencias UI
+Dashboard --> Components
+Leads --> Components
+Pipeline --> Components
+Quotes --> Components
+Profile --> Components
+
+Components --> DS
+
+' accesibilidad
+Dashboard --> Focus
+Dashboard --> ARIA
+Dashboard --> Skip
+
+Leads --> Focus
+Leads --> ARIA
+
+Quotes --> Forms
+Forms --> Focus
+
+' lógica
+Dashboard --> State
+Leads --> API
+Pipeline --> API
+Quotes --> API
+Profile --> State
+
+Shell --> Perf
+
+@enduml
